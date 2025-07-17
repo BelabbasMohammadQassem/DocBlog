@@ -13,4 +13,6 @@ urlpatterns = [
     path('login/', auth_view.LoginView.as_view(template_name='polls/login.html'), name='login'),
     path("logout/", custom_logout, name="logout"),
     path("register/", register, name="register"),
+    path('comment/<int:comment_id>/edit/', views.edit_comment, name='edit_comment'),
+    path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
     ]

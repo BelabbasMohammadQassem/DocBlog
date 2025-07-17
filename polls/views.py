@@ -6,6 +6,7 @@ from django.contrib.auth import logout
 from .forms import RegisterForm
 from django.contrib import messages
 from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -41,6 +42,38 @@ def article_detail(request, article_id):
         'form': form,
     })
 
+def edit_comment(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+
+    if not request.user.groups.filter(name='user').exists() or request.user !=comment.user:
+        messages.error(request, "Tu n'es pas autorisé à modifier ce commentaire.")
+        return redirect('article_detail', article_id=comment.article.id)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Commentaire mis à jour.")
+            return redirect('article_detail', article_id=comment.article.id)
+    else:
+        form = CommentForm(instance=comment)
+    return render(request, 'polls/edit_comment.html', {
+        'form': form,
+        'comment': comment
+    })
+
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+
+    if not request.user.groups.filter(name='user').exists() or request.user != comment.user:
+        messages.error(request, "Tu n'es pas autorisé à supprimer ce commentaire.")
+        return redirect('article_detail', article_id=comment.article.id)
+
+    if request.method == 'POST':
+        comment.delete()
+        messages.success(request, "Commentaire supprimé.")
+    return redirect('article_detail', article_id=comment.article.id)
 
 
 def about(request):

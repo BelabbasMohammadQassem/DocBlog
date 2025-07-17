@@ -1,0 +1,20 @@
+{% extends "polls/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>Modifier ton commentaire</h2>
+
+  {% if user == comment.user and user.groups.first.name == "user" %}
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Mettre à jour</button>
+      <a href="{% url 'article_detail' article_id=comment.article.id %}" class="btn btn-secondary">Annuler</a>
+    </form>
+  {% else %}
+    <div class="alert alert-danger mt-3">
+      Tu n'es pas autorisé à accéder à cette page.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

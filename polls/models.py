@@ -17,14 +17,19 @@ class Article(models.Model):
     categorie = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     image = models.ImageField(upload_to='articles_images/', blank=True, null=True)
 
+    def __str__(self):
+        return self.title
+
 class Comment(models.Model):
     article = models.ForeignKey("Article", on_delete=models.CASCADE, related_name="comments")
     user = models.ForeignKey (settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-def __str__(self):
-    return f'Comment by {self.user} on {self.article}'
+    def __str__(self):
+        excerpt = (self.content[:40] + '...') if len(self.content) > 40 else self.content
+        return f'Le commentaire est {self.article}: "{excerpt}"'
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):

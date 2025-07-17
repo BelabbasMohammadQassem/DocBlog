@@ -23,11 +23,22 @@
       <strong>{{ comment.user.username }}</strong>
       <span class="text-muted small">— {{ comment.created_at|date:"d/m/Y H:i" }}</span>
       <p class="mt-2 mb-0">{{ comment.content }}</p>
+
+      {% if comment.user == user and user.groups.first.name == "user" %}
+        <div class="mt-2">
+          <a href="{% url 'edit_comment' comment.id %}" class="btn btn-sm btn-outline-primary">Modifier</a>
+          <form action="{% url 'delete_comment' comment.id %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+          </form>
+        </div>
+      {% endif %}
     </div>
   {% empty %}
     <p>Aucun commentaire pour l'instant.</p>
   {% endfor %}
 </div>
+
 
 <hr>
 
