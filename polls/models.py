@@ -7,6 +7,7 @@ class Category (models.Model):
     description = models.CharField(max_length=200)
     
     def __str__(self):
+        """Retourne le nom de la catégorie."""
         return self.name
 
 class Article(models.Model):
@@ -18,6 +19,7 @@ class Article(models.Model):
     image = models.ImageField(upload_to='articles_images/', blank=True, null=True)
 
     def __str__(self):
+        """Retourne le titre de l'article."""
         return self.title
 
 class Comment(models.Model):
@@ -27,6 +29,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+        """Retourne un extrait du commentaire suivi du titre de l'article associé."""
         excerpt = (self.content[:40] + '...') if len(self.content) > 40 else self.content
         return f'Le commentaire est {self.article}: "{excerpt}"'
 
@@ -57,4 +60,5 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     
     def __str__(self):
+        """Retourne l'adresse email de l'utilisateur."""
         return self.email
